@@ -18,25 +18,21 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
-});
-
+// Send current time
 app.get('/api', (req, res) => {
-  res.json({"unix": new Date().getTime(), "utc": new Date().toUTCString()});
+  res.json({"unix": Date.now(), "utc": new Date().toUTCString()});
 });
 
+// Send formatted date and time according to Unix and UTC
 app.get('/api/:date', (req, res) => {
   let routeParam = req.params.date;
+  const date = isNaN(+routeParam) ? new Date(routeParam) : new Date(+routeParam);
+  const unixDate = new Date(date).getTime()
+  const utcDate = new Date(date);
 
-  if (!isNaN(+routeParam)) routeParam = +routeParam;
-  const date = new Date(routeParam);
-
-  date == "Invalid Date" 
+  unixDate == "Invalid Date" || utcDate == "Invalid Date"
   ? res.json({"error": "Invalid Date"})
-  : res.json({"unix": date.getTime(), "utc": date.toUTCString()});
+  : res.json({"unix": unixDate, "utc": utcDate.toUTCString()});
 });
 
 // listen for requests :)
